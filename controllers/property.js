@@ -9,8 +9,33 @@ const _ = require('lodash');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 const fs = require('fs');
 const { smartTrim } = require('../helpers/blog');
+const reader = require('xlsx')
+const readXlsxFile = require('read-excel-file/node');
 // Validation
 const validatePostInput = require('../validation/post');
+
+const prpertySchema = {
+    'PropertyName': {
+        prop: 'PropertyName',
+        type: String
+    },
+    'Sector': {
+        prop: 'Sector',
+        type: String
+    },
+    'City': {
+        prop: 'City',
+        type: String
+    },
+    'State': {
+        prop: 'State',
+        type: String
+    },
+    'Pincode': {
+        prop: 'Pincode',
+        type: String
+    }
+}
 
 // @route   POST api/posts
 // @desc    Create post
@@ -37,34 +62,11 @@ exports.create = (req, res) => {
     newPost.sector = req.body.sector;
     newPost.city = req.body.city;
     newPost.slug = slugify(req.body.propertyname).toLowerCase();
-    // });
-
-    // req.body.tags.map((tagname) => {
-    //   let tagString = tagname.toLowerCase().replace(/^\s+|\s+$/gm,'');
-    //   Tags.findOne({ name: tagString }).then(tag => {
-    //     if (!tag) {
-    //       let TagsNames = new Tags({
-    //         name: tagString
-    //       });
-    //       TagsNames.save().then((tagname) => {null});
-    //     }
-    //   });
-    // });
-    // Profile.findOne({user: req.user.id}).then(profile => {
-    //   profile.questions = profile.questions + 1;
-    //   profile.save().then((profile) => {null});
-    // });
-
+    
     newPost.save()
       .then(post => res.json(post))
       .catch(err => res.status(401).json({ message: 'Server facing some error to add your post' }));
 //   }
-
-
-
-
-
-
 
     // let form = new formidable.IncomingForm();
     // form.keepExtensions = true;
@@ -132,20 +134,35 @@ exports.list = (req, res) => {
 };
 
 exports.read = (req, res) => {
+    // Add all properties from excel file
+    // var workbook = reader.readFile('properties.xlsx');
+    // var sheet_name_list = workbook.SheetNames;
+    // var xlData = reader.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+    //     console.log("Full Data..", xlData);
+
+    // for (i = 1; i < xlData.length; i++) {
+    //     console.log(xlData[i]);
+
+    //     let newPost = new Property();
+    // newPost.propertyname= xlData[i].PropertyName;
+    // newPost.sector =xlData[i].Sector;
+    // newPost.city = xlData[i].City;
+    // newPost.slug = slugify(xlData[i].PropertyName).toLowerCase();
+    // newPost.save()
+    // }
+        
+
     const slug = req.params.slug.toLowerCase();
     Property.findOne({ slug })
         .populate('reviews', '_id name slug')
         .exec((err, data) => {
             if (err) {
-                return res.json({
-                    error: errorHandler(err)
-                });
+                return res.status(401).json({ message: 'No Data found for this property' })
             }
             res.json(data);
         });
 };
 
-// //
 // exports.listSearch = (req, res) => {
 //     console.log(req.query);
 //     const { search } = req.query;
