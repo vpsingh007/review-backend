@@ -13,13 +13,14 @@ const categoryRoutes = require('./routes/category');
 const tagRoutes = require('./routes/tag');
 const formRoutes = require('./routes/form');
 const propertyRoutes = require('./routes/property');
+const reviewRoutes = require('./routes/review');
 
 // app
 const app = express();
 
 // db
 mongoose
-    .connect(process.env.DATABASE_CLOUD, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
+    .connect(process.env.DATABASE_LOCAL, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false })
     .then(() => console.log('DB connected'))
     .catch(err => {
         console.log(err);
@@ -41,6 +42,7 @@ app.use('/api', categoryRoutes);
 app.use('/api', tagRoutes);
 app.use('/api', formRoutes);
 app.use('/api', propertyRoutes);
+app.use('/api', reviewRoutes);
 
 // port
 const port = process.env.PORT || 8000;

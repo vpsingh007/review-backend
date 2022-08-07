@@ -3,18 +3,19 @@ const router = express.Router();
 const {
     create,
     list,
-    read
+    read,
+    update
 } = require('../controllers/property');
 
 const { requireSignin, adminMiddleware, authMiddleware, canUpdateDeleteBlog } = require('../controllers/auth');
 
 router.post('/property', requireSignin, create);
-router.post('/property/list', list);
+router.post('/properties', list);
 router.get('/property/:slug', read);
+router.put('/property/:slug', requireSignin, authMiddleware, update);
 // router.post('/blogs-categories-tags', listAllBlogsCategoriesTags);
 // router.get('/blog/:slug', read);
 // router.delete('/blog/:slug', requireSignin, adminMiddleware, remove);
-// router.put('/blog/:slug', requireSignin, adminMiddleware, update);
 // router.get('/blog/photo/:slug', photo);
 // router.post('/blogs/related', listRelated);
 // router.get('/blogs/search', listSearch);

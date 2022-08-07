@@ -3,10 +3,6 @@ const { ObjectId } = mongoose.Schema
 
 const propertySchema = new mongoose.Schema(
   {
-    createdBy: {
-      type: ObjectId,
-      ref: 'User'
-    },
     propertyname: {
       type: String,
       trim: true,
@@ -38,92 +34,98 @@ const propertySchema = new mongoose.Schema(
         type: Number,
         default: 0
     },
-    reviews: [{
-        postedBy: {
-          type: ObjectId,
-          ref: 'User',
-        },
-        place: {
-            type: String,
-        },
-        consquality: {
-          type: String,
-          default: "Average"
-        },
-        positive: {
-          type: String,
-        },
-        negative: {
-            type: String,
-        },
-        date: {
-          type: Date,
-          default: Date.now,
-        },
-    }], 
     constructionquality: {
             type: Number,
-            default: 0
+            default: 3
     },
     maintenance: {
             type: Number,
-            default: 0
+            default: 3
     },
     amenities: {
             type: Number,
-            default: 0
+            default: 3
     },
     cleanliness: {
             type: Number,
-            default: 0
+            default: 3
     },
     locality: {
             type: Number,
-            default: 0
+            default: 3
     },
     complaintsettlement: {
             type: Number,
-            default: 0
+            default: 3
     },
     maintenancecharge: {
             type: Number,
-            default: 0
+            default: 3
     },
     watersupply: {
             type: Number,
-            default: 0
+            default: 3
     },
     liftquality: {
             type: Number,
-            default: 0
+            default: 3
     },
     friendlyneigbour: {
             type: Number,
-            default: 0
+            default: 3
     },
     starone: {
         type: Number,
-        default: 0
+        default: 3
     },
     startwo: {
         type: Number,
-        default: 0
+        default: 2
     },
     starthree: {
         type: Number,
-        default: 0
+        default: 3
     },
     starfour: {
         type: Number,
-        default: 0
+        default: 5
     },
     starfive: {
         type: Number,
-        default: 0
+        default: 4
     },
-    categories: [{ type: ObjectId, ref: 'Category', required: true }],
+    overallrating: {
+      type: Number,
+      default: 4
+    },
+    reviews: [
+      {
+        postedBy: {
+          type: ObjectId,
+          ref: 'User'
+        },
+        reviewTitle: {
+            type: String,
+        },
+        reviewComment: {
+            type: String,
+        },
+        rating: {
+            type: Number,
+        },
+        date: {
+          type: Date,
+          default: Date.now
+        }
+      }
+    ],
     tags: [{ type: ObjectId, ref: 'Tag', required: true }],
+    postedBy: {
+      type: ObjectId,
+      ref: 'User'
+    }
   },
+  
   { timestamps: true },
 )
 

@@ -40,6 +40,7 @@ exports.read = (req, res) => {
                 error: 'Tag not found'
             });
         }
+       
         // res.json(tag);
         Blog.find({ tags: tag })
             .populate('categories', '_id name slug')
@@ -52,6 +53,7 @@ exports.read = (req, res) => {
                         error: errorHandler(err)
                     });
                 }
+                console.log(tag)
                 res.json({ tag: tag, blogs: data });
             });
     });

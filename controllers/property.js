@@ -14,28 +14,28 @@ const readXlsxFile = require('read-excel-file/node');
 // Validation
 const validatePostInput = require('../validation/post');
 
-const prpertySchema = {
-    'PropertyName': {
-        prop: 'PropertyName',
-        type: String
-    },
-    'Sector': {
-        prop: 'Sector',
-        type: String
-    },
-    'City': {
-        prop: 'City',
-        type: String
-    },
-    'State': {
-        prop: 'State',
-        type: String
-    },
-    'Pincode': {
-        prop: 'Pincode',
-        type: String
-    }
-}
+// const prpertySchema = {
+//     'PropertyName': {
+//         prop: 'PropertyName',
+//         type: String
+//     },
+//     'Sector': {
+//         prop: 'Sector',
+//         type: String
+//     },
+//     'City': {
+//         prop: 'City',
+//         type: String
+//     },
+//     'State': {
+//         prop: 'State',
+//         type: String
+//     },
+//     'Pincode': {
+//         prop: 'Pincode',
+//         type: String
+//     }
+// }
 
 // @route   POST api/posts
 // @desc    Create post
@@ -129,11 +129,54 @@ exports.list = (req, res) => {
                     error: errorHandler(err)
                 });
             }
+            console.log(data.length)
             res.json(data);
         });
 };
 
+
+
 exports.read = (req, res) => {
+    const slug = req.params.slug.toLowerCase();
+    console.log("slug...", slug)
+    Property.findOne({ slug })
+        .populate('reviews', '_id name slug')
+        .exec((err, data) => {
+            console.log("data from DB.", data)
+            if (err) {
+                // console.log("Error...", err)
+                return res.status(400).json({
+                    error: {message: "No record found for this property"}
+                });
+            }
+            if (data === undefined || data === null) {
+                // console.log("Error...", err)
+                return res.json({ property: {} });
+            } else {
+                console.log("DATA....", data)
+                res.json({ property: data });
+            }
+            // console.log("slug...", slug)
+            
+            
+        });
+}
+
+// exports.read = (req, res) => {
+//     const slug = req.params.slug.toLowerCase();
+//     console.log("Slug..", slug)
+//     Property.findOne({ slug })
+//         .populate('reviews', '_id name slug')
+//         .exec((err, data) => {
+//             if (err) {
+//                 return res.status(401).json({ message: 'No Data found for this property' })
+//             }
+//             console.log(data)
+//             return res.status(200).json(data);
+//         });
+//     };
+
+
     // Add all properties from excel file
     // var workbook = reader.readFile('properties.xlsx');
     // var sheet_name_list = workbook.SheetNames;
@@ -152,16 +195,6 @@ exports.read = (req, res) => {
     // }
         
 
-    const slug = req.params.slug.toLowerCase();
-    Property.findOne({ slug })
-        .populate('reviews', '_id name slug')
-        .exec((err, data) => {
-            if (err) {
-                return res.status(401).json({ message: 'No Data found for this property' })
-            }
-            res.json(data);
-        });
-};
 
 // exports.listSearch = (req, res) => {
 //     console.log(req.query);
@@ -207,3 +240,38 @@ exports.read = (req, res) => {
 //             });
 //     });
 // };
+
+exports.update = (req, res) => {
+    const slug = req.params.slug.toLowerCase();
+
+    Property.findOne({ slug }).exec((err, property) => {
+        if (err) {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        }
+
+        const { reviewTitle, reviewComment, rating } = req.body;
+        // console.log("before push..", req.body)
+        property.reviews.push({
+            reviewTitle: reviewTitle,
+            reviewComment: reviewComment,
+            rating: rating
+        });
+
+        console.log("after push..", property)
+
+        property.save((err, result) => {
+            if (err) {
+                return res.status(400).json({
+                    error: errorHandler(err)
+                });
+            }
+            // result.photo = undefined;
+            setTimeout(() => {
+                res.json(result);
+            }, 2000)
+            // res.json(result);
+        });
+    });
+};
