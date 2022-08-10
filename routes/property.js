@@ -6,13 +6,16 @@ const {
     read,
     update
 } = require('../controllers/property');
+const { runValidation } = require('../validators');
+const { reviewFieldsValidator } = require('../validators/property');
+
 
 const { requireSignin, adminMiddleware, authMiddleware, canUpdateDeleteBlog } = require('../controllers/auth');
 
 router.post('/property', requireSignin, create);
 router.post('/properties', list);
 router.get('/property/:slug', read);
-router.put('/property/:slug', requireSignin, authMiddleware, update);
+router.put('/property/:slug', reviewFieldsValidator, update);
 // router.post('/blogs-categories-tags', listAllBlogsCategoriesTags);
 // router.get('/blog/:slug', read);
 // router.delete('/blog/:slug', requireSignin, adminMiddleware, remove);

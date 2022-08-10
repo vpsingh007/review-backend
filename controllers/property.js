@@ -251,15 +251,16 @@ exports.update = (req, res) => {
             });
         }
 
-        const { reviewTitle, reviewComment, rating } = req.body;
+        const { userName, userEmail, reviewComment, rating } = req.body;
         // console.log("before push..", req.body)
         property.reviews.push({
-            reviewTitle: reviewTitle,
+            userName: userName,
+            userEmail: userEmail,
             reviewComment: reviewComment,
             rating: rating
         });
 
-        console.log("after push..", property)
+        // console.log("after push..", property)
 
         property.save((err, result) => {
             if (err) {

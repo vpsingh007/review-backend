@@ -104,14 +104,18 @@ const propertySchema = new mongoose.Schema(
           type: ObjectId,
           ref: 'User'
         },
-        reviewTitle: {
+        userName: {
             type: String,
+        },
+        userEmail: {
+          type: String,
         },
         reviewComment: {
             type: String,
         },
         rating: {
             type: Number,
+            default: 3
         },
         date: {
           type: Date,
