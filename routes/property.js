@@ -4,7 +4,8 @@ const {
     create,
     list,
     read,
-    update
+    update,
+    search
 } = require('../controllers/property');
 const { runValidation } = require('../validators');
 const { reviewFieldsValidator } = require('../validators/property');
@@ -16,6 +17,7 @@ router.post('/property', requireSignin, create);
 router.post('/properties', list);
 router.get('/property/:slug', read);
 router.put('/property/:slug', reviewFieldsValidator, update);
+router.get('/property/search/:slug', search);
 // router.post('/blogs-categories-tags', listAllBlogsCategoriesTags);
 // router.get('/blog/:slug', read);
 // router.delete('/blog/:slug', requireSignin, adminMiddleware, remove);

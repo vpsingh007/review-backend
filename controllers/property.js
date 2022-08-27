@@ -11,31 +11,7 @@ const fs = require('fs');
 const { smartTrim } = require('../helpers/blog');
 const reader = require('xlsx')
 const readXlsxFile = require('read-excel-file/node');
-// Validation
 const validatePostInput = require('../validation/post');
-
-// const prpertySchema = {
-//     'PropertyName': {
-//         prop: 'PropertyName',
-//         type: String
-//     },
-//     'Sector': {
-//         prop: 'Sector',
-//         type: String
-//     },
-//     'City': {
-//         prop: 'City',
-//         type: String
-//     },
-//     'State': {
-//         prop: 'State',
-//         type: String
-//     },
-//     'Pincode': {
-//         prop: 'Pincode',
-//         type: String
-//     }
-// }
 
 // @route   POST api/posts
 // @desc    Create post
@@ -121,6 +97,24 @@ exports.create = (req, res) => {
 // list, all properties
 
 exports.list = (req, res) => {
+
+    // Add all properties from excel file
+    // var workbook = reader.readFile('properties.xlsx');
+    // var sheet_name_list = workbook.SheetNames;
+    // var xlData = reader.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+    //     console.log("Full Data..", xlData);
+
+    // for (i = 1; i < xlData.length; i++) {
+    //     console.log(xlData[i]);
+
+    //     let newPost = new Property();
+    // newPost.propertyname= xlData[i].PropertyName;
+    // newPost.sector =xlData[i].Sector;
+    // newPost.city = xlData[i].City;
+    // newPost.slug = slugify(xlData[i].PropertyName).toLowerCase();
+    // newPost.save()
+    // }
+
     Property.find({})
         .populate('reviews', '_id name slug')
         .exec((err, data) => {
@@ -138,7 +132,8 @@ exports.list = (req, res) => {
 
 exports.read = (req, res) => {
     const slug = req.params.slug.toLowerCase();
-    console.log("slug...", slug)
+    console.log("slug...", slug);
+
     Property.findOne({ slug })
         .populate('reviews', '_id name slug')
         .exec((err, data) => {
@@ -162,6 +157,30 @@ exports.read = (req, res) => {
         });
 }
 
+
+exports.search = (req, res) => {
+    const slug = req.params.slug.toLowerCase();
+    console.log("slug...", slug);
+
+    Property.find({ 
+        "$or" : [
+            {
+                propertyname: {$regex: slug}
+            },
+            {
+                slug: {$regex: slug}
+            }
+        ]
+    })
+    .exec((err, data) => {
+        if (data === undefined || data === null) {
+            return res.json({ property: {} });
+        } else {
+            console.log("DATA....", data)
+            res.json({ property: data });
+        }
+    });
+}
 // exports.read = (req, res) => {
 //     const slug = req.params.slug.toLowerCase();
 //     console.log("Slug..", slug)
