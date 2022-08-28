@@ -123,7 +123,8 @@ exports.list = (req, res) => {
                     error: errorHandler(err)
                 });
             }
-            console.log(data.length)
+            console.log(data.length);
+            res.setHeader('Access-Control-Allow-Origin', 'https://review-data-frontend.herokuapp.com');
             res.json(data);
         });
 };
@@ -149,6 +150,7 @@ exports.read = (req, res) => {
                 return res.json({ property: {} });
             } else {
                 console.log("DATA....", data)
+                res.setHeader('Access-Control-Allow-Origin', 'https://review-data-frontend.herokuapp.com');
                 res.json({ property: data });
             }
             // console.log("slug...", slug)
